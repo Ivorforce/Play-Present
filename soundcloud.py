@@ -3,7 +3,7 @@ import urllib
 from lxml import html
 from cssselect import GenericTranslator
 
-def try_tracks(tracks):
+def try_tracks(tracks, out=None):
     searched = 0
 
     for track in tracks:
@@ -20,8 +20,13 @@ def try_tracks(tracks):
         track_url = "https://soundcloud.com" + href
         song_html = requests.get(track_url).text
         if "\"purchase_title\":\"Free Download" in song_html or "\"purchase_title\":\"Free DL" in song_html:
-            print("%s (%s)" % (track, track_url))
-            
+            track_info = "%s (%s)" % (track, track_url)
+            print(track_info)
+
+            if out:
+                with open(out, "a") as myfile:
+                    myfile.write(track_info + "\n")
+
         searched += 1
         if searched % 20 == 0:
             print("Searched %d tracks" % searched)

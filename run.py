@@ -12,12 +12,14 @@ argparser = argparse.ArgumentParser()
 argparser.add_argument('username', help='Spotify Username')
 argparser.add_argument('playlist', help='Spotify Playlist')
 argparser.add_argument('--offset', help='Offset at which to start')
+argparser.add_argument('--out', help='File to which to write the results')
 
 args = argparser.parse_args()
 
 username = args.username
 playlist_link = args.playlist
 offset = int(args.offset) if args.offset is not None else 0
+out = args.out
 
 
 url_regex = re.compile("%s([0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
@@ -53,5 +55,5 @@ while offset >= 0:
         exit(0)
     else:
         print("\nFound %d tracks between offset %d and %d - Crawling..." % (len(found_tracks), offset, offset + 100))
-        try_tracks(found_tracks)
+        try_tracks(found_tracks, out=out)
         offset += len(found_tracks)
