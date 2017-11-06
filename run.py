@@ -58,7 +58,7 @@ while offset >= 0:
 
         if out:
             with open(out, "a") as myfile:
-                myfile.write("At offset %d" % offset)
+                myfile.write("At offset %d\n" % offset)
 
         try_tracks(found_tracks, out=out)
         offset += len(found_tracks)
