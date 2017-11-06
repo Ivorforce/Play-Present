@@ -13,6 +13,7 @@ argparser.add_argument('username', help='Spotify Username')
 argparser.add_argument('playlist', help='Spotify Playlist')
 argparser.add_argument('--offset', help='Offset at which to start')
 argparser.add_argument('--out', help='File to which to write the results')
+argparser.add_argument('--nofile', help='File to which to write the results')
 
 args = argparser.parse_args()
 
@@ -20,11 +21,6 @@ username = args.username
 playlist_link = args.playlist
 offset = int(args.offset) if args.offset is not None else 0
 out = args.out
-
-def write_out(string):
-    if out:
-        with open(out, "a") as myfile:
-            myfile.write(string)
 
 url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 url_regex_result = url_regex.search(playlist_link)
@@ -44,6 +40,19 @@ if not token:
 print("Hello, %s!" % username)
 
 sp = spotipy.Spotify(auth=token)
+
+playlist = sp.user_playlist(user_id, playlist_id)
+print("Searching playlist: %s" % playlist['name'])
+
+if not out and not args.nofile:
+    out = playlist['name'] + ".txt"
+
+if out:
+    print("Writing to: %s" % out)
+def write_out(string):
+    if out:
+        with open(out, "a") as myfile:
+            myfile.write(string)
 
 while offset >= 0:
     results = sp.user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
