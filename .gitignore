@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# Spotifree
+credentials.py
+.cache-*
+.idea/*
