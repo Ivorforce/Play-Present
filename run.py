@@ -26,7 +26,7 @@ def write_out(string):
         with open(out, "a") as myfile:
             myfile.write(string)
 
-url_regex = re.compile("%s([0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
+url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 url_regex_result = url_regex.search(playlist_link)
 
 user_id = url_regex_result.group(1)
