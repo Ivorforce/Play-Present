@@ -19,9 +19,9 @@ def try_tracks(tracks):
 
         track_url = "https://soundcloud.com" + href
         song_html = requests.get(track_url).text
-        if ("Free Download" in song_html):
+        if "\"purchase_title\":\"Free Download" in song_html or "\"purchase_title\":\"Free DL" in song_html:
             print("%s (%s)" % (track, track_url))
-
+            
         searched += 1
         if searched % 20 == 0:
             print("Searched %d tracks" % searched)
