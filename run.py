@@ -1,4 +1,4 @@
-import sys
+import sys, argparse
 import re
 
 from credentials import app_id, app_secret, redirect_uri
@@ -10,6 +10,7 @@ scope = 'user-library-read'
 if len(sys.argv) > 2:
     username = sys.argv[1]
     playlist_link = sys.argv[2]
+    offset = sys.argv[3] if len(sys.argv) > 3 else 0
 else:
     print("Usage: %s username playlist_link" % (sys.argv[0],))
     sys.exit(1)
@@ -33,7 +34,6 @@ print("Hello, %s!" % username)
 
 sp = spotipy.Spotify(auth=token)
 
-offset = 0
 while offset >= 0:
     results = sp.user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
 
@@ -47,6 +47,6 @@ while offset >= 0:
         print("Done!")
         exit(0)
     else:
-        print("\nFound %d tracks (non-exhaustive) - Crawling..." % len(found_tracks))
+        print("\nFound %d tracks between offset %d and %d - Crawling..." % (len(found_tracks), offset, offset + 100))
         try_tracks(found_tracks)
         offset += len(found_tracks)
