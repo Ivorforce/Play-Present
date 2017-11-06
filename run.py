@@ -55,5 +55,10 @@ while offset >= 0:
         exit(0)
     else:
         print("\nFound %d tracks between offset %d and %d - Crawling..." % (len(found_tracks), offset, offset + 100))
+
+        if out:
+            with open(out, "a") as myfile:
+                myfile.write("At offset %d" % offset)
+
         try_tracks(found_tracks, out=out)
         offset += len(found_tracks)
