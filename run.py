@@ -21,6 +21,10 @@ playlist_link = args.playlist
 offset = int(args.offset) if args.offset is not None else 0
 out = args.out
 
+def write_out(string):
+    if out:
+        with open(out, "a") as myfile:
+            myfile.write(string)
 
 url_regex = re.compile("%s([0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 url_regex_result = url_regex.search(playlist_link)
@@ -52,13 +56,11 @@ while offset >= 0:
 
     if len(found_tracks) == 0:
         print("Done!")
+        write_out("Done!")
         exit(0)
     else:
         print("\nFound %d tracks between offset %d and %d - Crawling..." % (len(found_tracks), offset, offset + 100))
+        write_out("At offset %d\n" % offset)
 
-        if out:
-            with open(out, "a") as myfile:
-                myfile.write("At offset %d\n" % offset)
-
-        try_tracks(found_tracks, out=out)
+        try_tracks(found_tracks, write_out=write_out)
         offset += len(found_tracks)

@@ -3,7 +3,7 @@ import urllib
 from lxml import html
 from cssselect import GenericTranslator
 
-def try_tracks(tracks, out=None):
+def try_tracks(tracks, write_out=()):
     searched = 0
 
     for track in tracks:
@@ -23,9 +23,7 @@ def try_tracks(tracks, out=None):
             track_info = "%s (%s)" % (track, track_url)
             print(track_info)
 
-            if out:
-                with open(out, "a") as myfile:
-                    myfile.write(track_info + "\n")
+            write_out(track_info + "\n")
 
         searched += 1
         if searched % 20 == 0:
