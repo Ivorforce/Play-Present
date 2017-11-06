@@ -45,7 +45,7 @@ playlist = sp.user_playlist(user_id, playlist_id)
 print("Searching playlist: %s" % playlist['name'])
 
 if not out and not args.nofile:
-    out = playlist['name'] + ".txt"
+    out = re.sub(r'\W+', '', playlist['name']) + ".txt"
 
 if out:
     print("Writing to: %s" % out)
