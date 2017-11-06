@@ -7,13 +7,18 @@ from soundcloud import try_tracks
 
 scope = 'user-library-read'
 
-if len(sys.argv) > 2:
-    username = sys.argv[1]
-    playlist_link = sys.argv[2]
-    offset = sys.argv[3] if len(sys.argv) > 3 else 0
-else:
-    print("Usage: %s username playlist_link" % (sys.argv[0],))
-    sys.exit(1)
+argparser = argparse.ArgumentParser()
+
+argparser.add_argument('username', help='Spotify Username')
+argparser.add_argument('playlist', help='Spotify Playlist')
+argparser.add_argument('--offset', help='Offset at which to start')
+
+args = argparser.parse_args()
+
+username = args.username
+playlist_link = args.playlist
+offset = int(args.offset) if args.offset is not None else 0
+
 
 url_regex = re.compile("%s([0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 url_regex_result = url_regex.search(playlist_link)
