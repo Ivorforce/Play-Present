@@ -106,3 +106,4 @@ praw.ini
 .cache-*
 .idea/*
 results/*
+store/*

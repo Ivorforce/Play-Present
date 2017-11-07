@@ -1,5 +1,5 @@
 import time
-import re
+import re, os
 import praw
 
 import spotify
@@ -53,17 +53,20 @@ def reply_text(tracks):
 
 # Load
 
-submission_store = "submission-store"
+if not os.path.exists("store"):
+    os.makedirs("store")
+
+submission_store = "store/submissions"
 try:
     with open(submission_store, "r") as store:
-        done_submissions = store.readlines()
+        done_submissions = store.read().split("\n")
 except FileNotFoundError:
     done_submissions = []
 
-mention_store = "mention-store"
+mention_store = "store/mentions"
 try:
     with open(mention_store, "r") as store:
-        done_mentions = store.readlines()
+        done_mentions = store.read().split("\n")
 except FileNotFoundError:
     done_mentions = []
 
@@ -77,10 +80,10 @@ while True:
                     done_submissions.append(submission.id)
 
                     print("Searching playlist for submission " + submission.id)
-                    tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
+                    tracks = []
 
                     if (len(tracks) > 0) or sub not in quiet_subreddits:
-                        submission.reply(reply_text(tracks))
+                 #       submission.reply(reply_text(tracks))
                         print("Replied to submission " + submission.id)
 
         for comment in r.inbox.mentions(limit=10):
@@ -88,15 +91,16 @@ while True:
                 done_mentions.append(comment.id)
 
                 print("Searching playlist for comment " + comment.id)
-                tracks = free_tracks_from_body(comment.body)
+                tracks = []
 
-                comment.reply(reply_text(tracks))
+                #comment.reply(reply_text(tracks))
                 print("Replied to comment " + comment.id)
 
         with open(submission_store, "w") as store:
-            store.writelines(done_submissions)
+            print(done_submissions)
+            store.write("\n".join(done_submissions))
         with open(mention_store, "w") as store:
-            store.writelines(done_mentions)
+            store.write("\n".join(done_mentions))
 
         time.sleep(60 * 10)
 
