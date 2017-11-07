@@ -3,6 +3,7 @@ A dumb tool for new DJs to find free tracks from their Spotify playlists.
 
 To run, add a credentials.py file like this:
 
+    spotify_username = 'some_username'
     app_id="some_app_id"
     app_secret="some_app_secret"
     redirect_uri="some_redirect_uri"
