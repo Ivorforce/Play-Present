@@ -23,8 +23,11 @@ def try_tracks(tracks, write_out=lambda x: None):
 
         track_url = "https://soundcloud.com" + href
         song_html = requests.get(track_url).text
+
         song_title = html.fromstring(song_html).findtext(".//title").lower()
-        purchase_title = purchase_title_regex.search(song_html).group(1).lower()
+
+        purchase_title_result = purchase_title_regex.search(song_html)
+        purchase_title = purchase_title_result.group(1).lower() if purchase_title_result else ""
 
         if "free download" in purchase_title or "free dl" in purchase_title\
                 or "free download" in song_title or "free dl" in song_title:
