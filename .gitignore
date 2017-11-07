@@ -102,6 +102,7 @@ ENV/
 
 # Spotifree
 credentials.py
+praw.ini
 .cache-*
 .idea/*
 results/*

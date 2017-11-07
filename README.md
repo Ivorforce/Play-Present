@@ -1,6 +1,8 @@
 # Play//Present
 A dumb tool for new DJs to find free releases in their Spotify playlists.
 
+You can most easily use me by posting a playlist link to [/r/playpresent](https://www.reddit.com/r/playpresent/)
+
 To run, add a credentials.py file like this:
 
     spotify_username = "some_username" # Your Spotify Username
