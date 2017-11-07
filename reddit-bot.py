@@ -71,6 +71,9 @@ try:
 except FileNotFoundError:
     done_mentions = []
 
+print("Hello, %s!" % spotify.credentials.spotify_username)
+print("Checking posts...")
+
 while True:
     try:
         for sub in relevant_subreddits:
