@@ -20,7 +20,7 @@ def try_track(track, number, write_out = lambda x: None, track_out = "%d %s @ %s
     elements = tree.xpath(GenericTranslator().css_to_xpath('ul>li>h2>a'))
 
     if len(elements) == 0:
-        return
+        return False
 
     href = elements[0].get('href')
 
