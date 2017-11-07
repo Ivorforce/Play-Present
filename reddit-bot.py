@@ -64,6 +64,7 @@ while True:
                 if submission.id not in done_submissions:
                     done_submissions.append(submission.id)
 
+                    print("Searching playlist for submission " + submission.id)
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
                     if (len(tracks) > 0) or sub not in quiet_subreddits:
@@ -74,6 +75,7 @@ while True:
             if comment.id not in done_mentions:
                 done_mentions.append(comment.id)
 
+                print("Searching playlist for comment " + comment.id)
                 tracks = free_tracks_from_body(comment.body)
 
                 comment.reply(reply_text(tracks))
