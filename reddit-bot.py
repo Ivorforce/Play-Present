@@ -17,12 +17,8 @@ quiet_subreddits = []
 
 r = praw.Reddit('play-present-bot', user_agent='play-present-bot user agent')
 
-####
-
-done_submissions = []
-done_mentions = []
-
 url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
+
 
 def free_tracks(user_id, playlist_id):
     found_tracks = []
@@ -55,6 +51,22 @@ def reply_text(tracks):
     else:
         return "I found no free tracks in this playlist :(%s" % bot_footer
 
+# Load
+
+submission_store = "submission-store"
+try:
+    with open(submission_store, "r") as store:
+        done_submissions = store.readlines()
+except FileNotFoundError:
+    done_submissions = []
+
+mention_store = "mention-store"
+try:
+    with open(mention_store, "r") as store:
+        done_mentions = store.readlines()
+except FileNotFoundError:
+    done_mentions = []
+
 while True:
     try:
         for sub in relevant_subreddits:
@@ -81,7 +93,13 @@ while True:
                 comment.reply(reply_text(tracks))
                 print("Replied to comment " + comment.id)
 
+        with open(submission_store, "w") as store:
+            store.writelines(done_submissions)
+        with open(mention_store, "w") as store:
+            store.writelines(done_mentions)
+
         time.sleep(60 * 10)
+
     except praw.exceptions.APIException as ex:
         print(ex) # But try again
         time.sleep(60 * 10) # Later
