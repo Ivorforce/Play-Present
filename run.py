@@ -61,7 +61,8 @@ while offset >= 0:
 
     for item in results['items']:
         track = item['track']
-        found_tracks.append(track['artists'][0]['name'] + " - " + track['name'])
+        artists = map(lambda artist: artist['name'], track['artists'])
+        found_tracks.append(", ".join(artists) + " - " + track['name'])
 
     if len(found_tracks) == 0:
         print("Done!")
