@@ -44,13 +44,16 @@ def free_tracks_from_body(body, url=""):
         return free_tracks(url_regex_result.group(1), url_regex_result.group(2))
     return []
 
-def reply_text(tracks):
+def reply_text(tracks, start_time):
+    time_diff = time.time() - start_time
+    time_comment = "This took me %d seconds!" % time_diff if time_diff < 120 else "This took me about %d minutes!" % int(time_diff / 60)
+
     if (len(tracks) > 0):
         track_list = "\n".join(tracks)
-        return ("I found %d free %s in this playlist: \n\n%s%s" %
-                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, bot_footer))
+        return ("I found %d free %s in this playlist: \n\n%s\n\n%s%s" %
+                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, time_comment, bot_footer))
     else:
-        return "I found no free tracks in this playlist :(%s" % bot_footer
+        return "I found no free tracks in this playlist :(\n\n%s%s" % (time_comment, bot_footer)
 
 # Load
 
@@ -82,10 +85,12 @@ while True:
             for submission in subreddit.hot(limit=10):
                 if submission.id not in done_submissions:
                     print("Searching playlist for submission " + submission.id)
+
+                    start_time = time.time()
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
                     if (len(tracks) > 0) or sub not in quiet_subreddits:
-                        submission.reply(reply_text(tracks))
+                        submission.reply(reply_text(tracks, start_time))
                         print("Replied to submission " + submission.id)
 
                     done_submissions.append(submission.id)
@@ -93,9 +98,11 @@ while True:
         for comment in r.inbox.mentions(limit=10):
             if comment.id not in done_mentions:
                 print("Searching playlist for comment " + comment.id)
+
+                start_time = time.time()
                 tracks = free_tracks_from_body(comment.body)
 
-                comment.reply(reply_text(tracks))
+                comment.reply(reply_text(tracks, start_time))
                 print("Replied to comment " + comment.id)
 
                 done_mentions.append(comment.id)
