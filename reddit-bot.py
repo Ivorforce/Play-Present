@@ -13,6 +13,7 @@ bot_footer = """
 """
 
 relevant_subreddits = ["playpresent"]
+quiet_subreddits = []
 
 r = praw.Reddit('play-present-bot', user_agent='play-present-bot user agent')
 
@@ -65,7 +66,7 @@ while True:
 
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
-                    if (len(tracks) > 0):
+                    if (len(tracks) > 0) or sub not in quiet_subreddits:
                         submission.reply(reply_text(tracks))
                         print("Replied to submission " + submission.id)
 
