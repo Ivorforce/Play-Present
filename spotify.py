@@ -5,30 +5,25 @@ import spotipy.util as util
 
 scope = 'user-library-read'
 
-token = util.prompt_for_user_token(credentials.spotify_username, scope, credentials.app_id, credentials.app_secret,
-                                   credentials.redirect_uri)
-
-if not token:
-    print("Can't get token for '%s'" % credentials.spotify_username)
-    exit(1)
-
-sp = spotipy.Spotify(auth=token)
-
-def playlist_name(user_id, playlist_id):
-    return sp.user_playlist(user_id, playlist_id)['name']
-
-def analyze_playlist(callback, user_id, playlist_id, offset):
-
-    token = util.prompt_for_user_token(credentials.spotify_username, scope, credentials.app_id, credentials.app_secret, credentials.redirect_uri)
+def get_token():
+    token = util.prompt_for_user_token(credentials.spotify_username, scope, credentials.app_id, credentials.app_secret,
+                                       credentials.redirect_uri)
 
     if not token:
         print("Can't get token for '%s'" % credentials.spotify_username)
         exit(1)
+    else:
+        return token
 
-    sp = spotipy.Spotify(auth=token)
+def get_spotify():
+    return spotipy.Spotify(auth=get_token())
 
+def playlist_name(user_id, playlist_id):
+    return get_spotify().user_playlist(user_id, playlist_id)['name']
+
+def analyze_playlist(callback, user_id, playlist_id, offset):
     while offset >= 0:
-        results = sp.user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
+        results = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
 
         found_tracks = []
 

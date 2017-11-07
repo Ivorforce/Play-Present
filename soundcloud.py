@@ -11,7 +11,7 @@ TRACK_VARIATION_MS = 10000
 purchase_title_regex = re.compile(re.escape("\"purchase_title\":\"") + "([^\"]*)")
 duration_regex = re.compile(re.escape("\"full_duration\":") + "([^,]*)")
 
-def try_track(track, write_out=lambda x: None):
+def try_track(track, number, write_out=lambda x: None):
     query = ", ".join(track.artists) + " - " + track.title
     query_url = "https://soundcloud.com/search/sounds?q=" + urllib.parse.quote(query, safe='')
     request = requests.get(query_url)
@@ -42,6 +42,6 @@ def try_track(track, write_out=lambda x: None):
     if duration_similar and \
             ("free download" in purchase_title or "free dl" in purchase_title
              or "free download" in song_title or "free dl" in song_title):
-        track_info = "%s @ %s" % (query, track_url)
+        track_info = "%d %s @ %s" % (number, query, track_url)
         print(track_info)
         write_out(track_info + "\n")

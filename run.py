@@ -47,14 +47,14 @@ def write_out(string):
 
 print()
 
-def try_tracks(tracks):
-    searched = 0
+global searched
+searched = 0
 
-    if searched % 20 == 0:
-        write_out("At offset %d\n" % offset)
+def try_tracks(tracks):
+    global searched
 
     for track in tracks:
-        soundcloud.try_track(track, write_out)
+        soundcloud.try_track(track, searched + 1, write_out)
 
         searched += 1
         if searched % 20 == 0:
