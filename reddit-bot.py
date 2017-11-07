@@ -101,7 +101,6 @@ while True:
                 done_mentions.append(comment.id)
 
         with open(submission_store, "w") as store:
-            print(done_submissions)
             store.write("\n".join(done_submissions))
         with open(mention_store, "w") as store:
             store.write("\n".join(done_mentions))
