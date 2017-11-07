@@ -40,12 +40,12 @@ if not out and not args.nofile:
 if out:
     print("Writing to: %s" % out)
 
-print()
-
 def write_out(string):
     if out:
         with open(out, "a") as myfile:
             myfile.write(string)
+
+print()
 
 def try_tracks(tracks):
     searched = 0
