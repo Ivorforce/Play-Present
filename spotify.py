@@ -21,7 +21,7 @@ def get_spotify():
 def playlist_name(user_id, playlist_id):
     return get_spotify().user_playlist(user_id, playlist_id)['name']
 
-def analyze_playlist(callback, user_id, playlist_id, offset):
+def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000):
     while offset >= 0:
         results = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
 
@@ -35,8 +35,10 @@ def analyze_playlist(callback, user_id, playlist_id, offset):
             setattr(track, 'duration', spotify_track['duration_ms'])
             found_tracks.append(track)
 
+        if offset >= limit:
+            return False
         if len(found_tracks) == 0:
-            return
+            return True
         else:
             callback(found_tracks)
             offset += len(found_tracks)

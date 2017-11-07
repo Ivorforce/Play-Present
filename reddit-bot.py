@@ -33,7 +33,8 @@ def free_tracks(user_id, playlist_id):
             track_num += 1
             soundcloud.try_track(track, track_num, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
 
-    spotify.analyze_playlist(try_tracks, user_id, playlist_id, 0)
+    if not spotify.analyze_playlist(try_tracks, user_id, playlist_id, 0):
+        found_tracks.append("... stopped due to timeout! Try a smaller playlist :)\n")
 
     return found_tracks
 
@@ -80,10 +81,10 @@ while True:
                     done_submissions.append(submission.id)
 
                     print("Searching playlist for submission " + submission.id)
-                    tracks = []
+                    tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
                     if (len(tracks) > 0) or sub not in quiet_subreddits:
-                 #       submission.reply(reply_text(tracks))
+                        submission.reply(reply_text(tracks))
                         print("Replied to submission " + submission.id)
 
         for comment in r.inbox.mentions(limit=10):
@@ -91,9 +92,9 @@ while True:
                 done_mentions.append(comment.id)
 
                 print("Searching playlist for comment " + comment.id)
-                tracks = []
+                tracks = free_tracks_from_body(comment.body)
 
-                #comment.reply(reply_text(tracks))
+                comment.reply(reply_text(tracks))
                 print("Replied to comment " + comment.id)
 
         with open(submission_store, "w") as store:
