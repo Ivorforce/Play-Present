@@ -1,4 +1,4 @@
-import argparse, re
+import argparse, re, os
 
 argparser = argparse.ArgumentParser()
 
@@ -25,5 +25,41 @@ user_id = url_regex_result.group(1)
 playlist_id = url_regex_result.group(2)
 
 import spotify
+import soundcloud
 
-spotify.analyze_playlist(user_id, playlist_id, offset, args.out, args.nofile)
+playlist_name = spotify.playlist_name(user_id, playlist_id)
+
+print("Hello, %s!" % spotify.credentials.spotify_username)
+print("Searching playlist: %s" % playlist_name)
+
+out = args.out
+if not out and not args.nofile:
+    if not os.path.exists("results"):
+        os.makedirs("results")
+    out = os.path.abspath("results/%s.txt") % re.sub(r'\W+', '', playlist_name)
+
+if out:
+    print("Writing to: %s" % out)
+
+def write_out(string):
+    if out:
+        with open(out, "a") as myfile:
+            myfile.write(string)
+
+def try_tracks(tracks):
+    print("\nFound %d tracks between offset %d and %d - Crawling..." % (len(tracks), offset, offset + 100))
+    write_out("At offset %d\n" % offset)
+
+    searched = 0
+
+    for track in tracks:
+        soundcloud.try_track(track, write_out)
+
+        searched += 1
+        if searched % 20 == 0:
+            print("Searched %d tracks" % searched)
+
+spotify.analyze_playlist(try_tracks, user_id, playlist_id, offset)
+
+print("Done!")
+write_out("Done!\n")
