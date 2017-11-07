@@ -104,3 +104,4 @@ ENV/
 credentials.py
 .cache-*
 .idea/*
+results/*

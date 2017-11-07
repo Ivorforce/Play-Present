@@ -1,7 +1,7 @@
-import sys, argparse
+import os, sys, argparse
 import re
 
-from credentials import app_id, app_secret, redirect_uri
+from credentials import app_id, app_secret, redirect_uri, spotify_username
 
 from soundcloud import try_tracks
 
@@ -9,7 +9,6 @@ scope = 'user-library-read'
 
 argparser = argparse.ArgumentParser()
 
-argparser.add_argument('username', help='Spotify Username')
 argparser.add_argument('playlist', help='Spotify Playlist')
 argparser.add_argument('--offset', help='Offset at which to start')
 argparser.add_argument('--out', help='File to which to write the results')
@@ -17,7 +16,6 @@ argparser.add_argument('--nofile', help='File to which to write the results')
 
 args = argparser.parse_args()
 
-username = args.username
 playlist_link = args.playlist
 offset = int(args.offset) if args.offset is not None else 0
 out = args.out
@@ -31,13 +29,13 @@ playlist_id = url_regex_result.group(2)
 import spotipy
 import spotipy.util as util
 
-token = util.prompt_for_user_token(username, scope, app_id, app_secret, redirect_uri)
+token = util.prompt_for_user_token(spotify_username, scope, app_id, app_secret, redirect_uri)
 
 if not token:
-    print("Can't get token for", username)
+    print("Can't get token for '%s'" % spotify_username)
     exit(1)
 
-print("Hello, %s!" % username)
+print("Hello, %s!" % spotify_username)
 
 sp = spotipy.Spotify(auth=token)
 
@@ -45,7 +43,9 @@ playlist = sp.user_playlist(user_id, playlist_id)
 print("Searching playlist: %s" % playlist['name'])
 
 if not out and not args.nofile:
-    out = re.sub(r'\W+', '', playlist['name']) + ".txt"
+    if not os.path.exists("results"):
+        os.makedirs("results")
+    out = os.path.abspath("results/%s.txt") % re.sub(r'\W+', '', playlist['name'])
 
 if out:
     print("Writing to: %s" % out)
