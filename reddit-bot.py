@@ -18,7 +18,8 @@ r = praw.Reddit('play-present-bot', user_agent='play-present-bot user agent')
 
 ####
 
-already_done = []
+done_submissions = []
+done_mentions = []
 
 url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 
@@ -39,29 +40,45 @@ def free_tracks(user_id, playlist_id):
 
     return found_tracks
 
+def free_tracks_from_body(body, url=""):
+    url_regex_result = url_regex.search(url) or url_regex.search(body)
+    if url_regex_result:
+        return free_tracks(url_regex_result.group(1), url_regex_result.group(2))
+    return []
+
+def reply_text(tracks):
+    if (len(tracks) > 0):
+        track_list = "\n".join(tracks)
+        return ("I found %d free %s in this playlist: \n\n%s%s" %
+                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, bot_footer))
+    else:
+        return "I found no free tracks in this playlist :(%s" % bot_footer
+
 while True:
     try:
         for sub in relevant_subreddits:
             subreddit = r.subreddit(sub)
 
             for submission in subreddit.hot(limit=10):
-                in_link = submission.url
-                op_text = submission.selftext.lower()
+                if submission.id not in done_submissions:
+                    done_submissions.append(submission.id)
 
-                url_regex_result = url_regex.search(in_link) or url_regex.search(op_text)
-
-                if submission.id not in already_done and url_regex_result:
-                    already_done.append(submission.id)
-
-                    tracks = free_tracks(url_regex_result.group(1), url_regex_result.group(2))
+                    tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
                     if (len(tracks) > 0):
-                        track_list = "\n".join(tracks)
-                        submission.reply("I found %d free %s in this playlist: \n\n%s%s" %
-                                         (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, bot_footer))
-                        print("Replied to " + submission.id)
+                        submission.reply(reply_text(tracks))
+                        print("Replied to submission " + submission.id)
 
-            time.sleep(60 * 10)
+        for comment in r.inbox.mentions(limit=10):
+            if comment.id not in done_mentions:
+                done_mentions.append(comment.id)
+
+                tracks = free_tracks_from_body(comment.body)
+
+                comment.reply(reply_text(tracks))
+                print("Replied to comment " + comment.id)
+
+        time.sleep(60 * 10)
     except praw.exceptions.APIException as ex:
         print(ex) # But try again
         time.sleep(60 * 10) # Later
