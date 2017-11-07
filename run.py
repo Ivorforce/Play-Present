@@ -64,6 +64,7 @@ while offset >= 0:
         track = lambda: None
         setattr(track, 'title', spotify_track['name'])
         setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
+        setattr(track, 'duration', spotify_track['duration_ms'])
         found_tracks.append(track)
 
     if len(found_tracks) == 0:
