@@ -4,9 +4,9 @@ from lxml import html
 from cssselect import GenericTranslator
 import re
 
-TRACK_VARIATION_MIN = 0.97
-TRACK_VARIATION_MAX = 1.03
-TRACK_VARIATION_MS = 5000
+TRACK_VARIATION_MIN = 0.9
+TRACK_VARIATION_MAX = 1.1 # .1 difference for production changes
+TRACK_VARIATION_MS = 1000 * 30 # 30 Seconds in case some intro / outro was added
 
 purchase_title_regex = re.compile(re.escape("\"purchase_title\":\"") + "([^\"]*)")
 duration_regex = re.compile(re.escape("\"full_duration\":") + "([^,]*)")
