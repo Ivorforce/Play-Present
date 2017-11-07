@@ -92,6 +92,8 @@ while True:
                         print("Replied to submission " + submission.id)
 
                     done_submissions.append(submission.id)
+                    with open(submission_store, "a") as store:
+                        store.write("\n" + submission.id)
 
         for comment in r.inbox.mentions(limit=10):
             if comment.id not in done_mentions:
@@ -104,11 +106,8 @@ while True:
                 print("Replied to comment " + comment.id)
 
                 done_mentions.append(comment.id)
-
-        with open(submission_store, "w") as store:
-            store.write("\n".join(done_submissions))
-        with open(mention_store, "w") as store:
-            store.write("\n".join(done_mentions))
+                with open(mention_store, "a") as store:
+                    store.write("\n" + comment.id)
 
         passed_time = (time.time() - cycle_start_time)
         time.sleep(max(60 * 10 - passed_time, 0)) # Take at most 60 * 10 seconds
