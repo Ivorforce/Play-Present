@@ -39,3 +39,7 @@ To continue a previous search, include the --offset parameter:
 To run the bot, run
 
     python reddit-bot.py
+    
+## Support
+
+While you're here, why not check me out on soundcloud: [Lukas Tenbrink on Soundcloud](http://soundcloud.com/lukastenbrink)
