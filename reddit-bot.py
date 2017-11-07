@@ -64,4 +64,5 @@ while True:
             time.sleep(60 * 10)
     except praw.exceptions.APIException as ex:
         print(ex) # But try again
+        time.sleep(60 * 10) # Later
 
