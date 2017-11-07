@@ -52,7 +52,7 @@ def reply_text(tracks, start_time):
         track_list = "\n".join(tracks)
         if (len(track_list) > 9000): # Reddit Limit at 10 000
             track_list = track_list[:9000] + "...\n\n(This was cut because the post was too long!)"
-            
+
         return ("I found %d free %s in this playlist: \n\n%s\n\n%s%s" %
                      (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, time_comment, bot_footer))
     else:
@@ -82,6 +82,8 @@ print("Checking posts...")
 
 while True:
     try:
+        cycle_start_time = time.time()
+
         for sub in relevant_subreddits:
             subreddit = r.subreddit(sub)
 
@@ -115,7 +117,8 @@ while True:
         with open(mention_store, "w") as store:
             store.write("\n".join(done_mentions))
 
-        time.sleep(60 * 10)
+        passed_time = (time.time() - cycle_start_time)
+        time.sleep(max(60 * 10 - passed_time, 0)) # Take at most 60 * 10 seconds
 
     except praw.exceptions.APIException as ex:
         print(ex) # But try again
