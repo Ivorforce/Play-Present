@@ -22,25 +22,24 @@ def playlist_name(user_id, playlist_id):
     return get_spotify().user_playlist(user_id, playlist_id)['name']
 
 def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result_limit=200):
-    while offset >= 0:
-        results = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
+    while True:
+        result_section = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
 
-        found_tracks = []
+        if len(result_section) == 0:
+            return True
 
-        for item in results['items']:
+        for item in result_section['items']:
             spotify_track = item['track']
             track = lambda: None
             setattr(track, 'title', spotify_track['name'])
             setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
             setattr(track, 'duration', spotify_track['duration_ms'])
 
-            found_tracks.append(track)
-            result_limit -= 1
+            if callback(track, offset):
+                result_limit -= 1
+                if result_limit < 0:
+                    return False
 
-        if offset >= limit or result_limit < 0:
-            return False
-        if len(found_tracks) == 0:
-            return True
-        else:
-            callback(found_tracks)
-            offset += len(found_tracks)
+            offset += 1
+            if offset >= limit:
+                return False

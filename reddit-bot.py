@@ -23,17 +23,10 @@ url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://
 def free_tracks(user_id, playlist_id):
     found_tracks = []
 
-    global track_num
-    track_num = 0
+    def try_track(track, offset):
+        return soundcloud.try_track(track, offset + 1, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
 
-    def try_tracks(tracks):
-        global track_num
-
-        for track in tracks:
-            track_num += 1
-            soundcloud.try_track(track, track_num, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
-
-    if not spotify.analyze_playlist(try_tracks, user_id, playlist_id, 0):
+    if not spotify.analyze_playlist(try_track, user_id, playlist_id, 0):
         found_tracks.append("... stopped due to timeout! Try a smaller playlist :)\n")
 
     return found_tracks

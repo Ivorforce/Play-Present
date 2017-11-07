@@ -47,21 +47,16 @@ def write_out(string):
 
 print()
 
-global searched
-searched = 0
+def try_track(track, offset):
+    result = soundcloud.try_track(track, offset + 1, write_out)
 
-def try_tracks(tracks):
-    global searched
+    if offset % 20 == 0:
+        print("Searched %d tracks" % offset)
 
-    for track in tracks:
-        soundcloud.try_track(track, searched + 1, write_out)
-
-        searched += 1
-        if searched % 20 == 0:
-            print("Searched %d tracks" % searched)
+    return result
 
 print("Searching playlist: %s" % playlist_name)
 write_out("From Playlist: %s\n" % playlist_name)
-spotify.analyze_playlist(try_tracks, user_id, playlist_id, offset)
+spotify.analyze_playlist(try_track, user_id, playlist_id, offset)
 
 write_out("Done!\n")
