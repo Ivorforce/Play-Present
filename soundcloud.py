@@ -10,7 +10,7 @@ def try_tracks(tracks, write_out=lambda x: None):
     searched = 0
 
     for track in tracks:
-        query = "https://soundcloud.com/search?q=" + urllib.parse.quote(track, safe='')
+        query = "https://soundcloud.com/search/sounds?q=" + urllib.parse.quote(track, safe='')
         request = requests.get(query)
 
         tree = html.fromstring(request.text)
