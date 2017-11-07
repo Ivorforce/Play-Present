@@ -60,9 +60,11 @@ while offset >= 0:
     found_tracks = []
 
     for item in results['items']:
-        track = item['track']
-        artists = map(lambda artist: artist['name'], track['artists'])
-        found_tracks.append(", ".join(artists) + " - " + track['name'])
+        spotify_track = item['track']
+        track = lambda: None
+        setattr(track, 'title', spotify_track['name'])
+        setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
+        found_tracks.append(track)
 
     if len(found_tracks) == 0:
         print("Done!")
