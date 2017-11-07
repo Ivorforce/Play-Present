@@ -12,10 +12,10 @@ as per the [Spotify API](https://developer.spotify.com/my-applications/#!/applic
 
 Then, run
 
-    python run.py username playlist_link
+    python run.py playlist_link
     
 which will crawl your playlist's tracks and write it to a file.
 
 To continue a previous search, include the --offset parameter:
 
-    python run.py username playlist_link --offset 1000
+    python run.py playlist_link --offset 1000
