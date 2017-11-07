@@ -50,6 +50,9 @@ def reply_text(tracks, start_time):
 
     if (len(tracks) > 0):
         track_list = "\n".join(tracks)
+        if (len(track_list) > 9000): # Reddit Limit at 10 000
+            track_list = track_list[:9000] + "...\n\n(This was cut because the post was too long!)"
+            
         return ("I found %d free %s in this playlist: \n\n%s\n\n%s%s" %
                      (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, time_comment, bot_footer))
     else:
