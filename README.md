@@ -3,10 +3,11 @@ A dumb tool for new DJs to find free releases in their Spotify playlists.
 
 To run, add a credentials.py file like this:
 
-    spotify_username = 'some_username'
-    app_id="some_app_id"
-    app_secret="some_app_secret"
-    redirect_uri="some_redirect_uri"
+    spotify_username = "some_username" # Your Spotify Username
+
+    app_id="some_app_id" # This Spotify app's ID
+    app_secret="some_app_secret" # This Spotify app's Secret
+    redirect_uri="some_redirect_uri" # This Spotify app's redirect uri
     
 as per the [Spotify API](https://developer.spotify.com/my-applications/#!/applications).
 
