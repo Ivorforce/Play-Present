@@ -78,8 +78,6 @@ while True:
 
             for submission in subreddit.hot(limit=10):
                 if submission.id not in done_submissions:
-                    done_submissions.append(submission.id)
-
                     print("Searching playlist for submission " + submission.id)
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
@@ -87,15 +85,17 @@ while True:
                         submission.reply(reply_text(tracks))
                         print("Replied to submission " + submission.id)
 
+                    done_submissions.append(submission.id)
+
         for comment in r.inbox.mentions(limit=10):
             if comment.id not in done_mentions:
-                done_mentions.append(comment.id)
-
                 print("Searching playlist for comment " + comment.id)
                 tracks = free_tracks_from_body(comment.body)
 
                 comment.reply(reply_text(tracks))
                 print("Replied to comment " + comment.id)
+
+                done_mentions.append(comment.id)
 
         with open(submission_store, "w") as store:
             print(done_submissions)
