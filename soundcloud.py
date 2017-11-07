@@ -4,8 +4,13 @@ from lxml import html
 from cssselect import GenericTranslator
 import re
 
+TRACK_VARIATION_MIN = 0.9
+TRACK_VARIATION_MAX = 1.1
+TRACK_VARIATION_MS = 10000
+
 purchase_title_regex = re.compile(re.escape("\"purchase_title\":\"") + "([^\"]*)")
 duration_regex = re.compile(re.escape("\"full_duration\":") + "([^,]*)")
+
 
 def try_tracks(tracks, write_out=lambda x: None):
     searched = 0
@@ -34,11 +39,13 @@ def try_tracks(tracks, write_out=lambda x: None):
         duration_result = duration_regex.search(song_html)
         duration = int(duration_result.group(1).lower()) if duration_result else None
 
-        duration_similar = duration > track.duration * 0.7 and duration < track.duration * 1.3 if duration else True
+        duration_similar = duration > track.duration * TRACK_VARIATION_MIN - TRACK_VARIATION_MS \
+                           and duration < track.duration * TRACK_VARIATION_MAX + TRACK_VARIATION_MS \
+            if duration else True
 
         if duration_similar and \
                 ("free download" in purchase_title or "free dl" in purchase_title
-                or "free download" in song_title or "free dl" in song_title):
+                 or "free download" in song_title or "free dl" in song_title):
             track_info = "%s @ %s" % (query, track_url)
             print(track_info)
             write_out(track_info + "\n")
