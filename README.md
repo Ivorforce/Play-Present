@@ -3,7 +3,7 @@ A dumb tool for new DJs to find free releases in their Spotify playlists.
 
 ## Try
 
-You can most easily use me by posting a playlist link to [/r/playpresent](https://www.reddit.com/r/playpresent/)
+You can most easily use me by posting a playlist link to [/r/playpresent](https://www.reddit.com/r/playpresent/), or commenting it inside a comment and mentioning /u/play-present-bot.
 
 ## Install
 
