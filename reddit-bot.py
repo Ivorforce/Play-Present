@@ -40,24 +40,28 @@ def free_tracks(user_id, playlist_id):
     return found_tracks
 
 while True:
-    for sub in relevant_subreddits:
-        subreddit = r.subreddit(sub)
+    try:
+        for sub in relevant_subreddits:
+            subreddit = r.subreddit(sub)
 
-        for submission in subreddit.hot(limit=10):
-            in_link = submission.url
-            op_text = submission.selftext.lower()
+            for submission in subreddit.hot(limit=10):
+                in_link = submission.url
+                op_text = submission.selftext.lower()
 
-            url_regex_result = url_regex.search(in_link) or url_regex.search(op_text)
+                url_regex_result = url_regex.search(in_link) or url_regex.search(op_text)
 
-            if submission.id not in already_done and url_regex_result:
-                already_done.append(submission.id)
+                if submission.id not in already_done and url_regex_result:
+                    already_done.append(submission.id)
 
-                tracks = free_tracks(url_regex_result.group(1), url_regex_result.group(2))
+                    tracks = free_tracks(url_regex_result.group(1), url_regex_result.group(2))
 
-                if (len(tracks) > 0):
-                    track_list = "\n".join(tracks)
-                    submission.reply("I found %d free %s in this playlist: \n\n%s%s" %
-                                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, bot_footer))
-                    print("Replied to " + submission.id)
+                    if (len(tracks) > 0):
+                        track_list = "\n".join(tracks)
+                        submission.reply("I found %d free %s in this playlist: \n\n%s%s" %
+                                         (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, bot_footer))
+                        print("Replied to " + submission.id)
 
-        time.sleep(60 * 10)
+            time.sleep(60 * 10)
+    except praw.exceptions.APIException as ex:
+        print(ex) # But try again
+
