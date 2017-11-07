@@ -43,3 +43,6 @@ def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result
             offset += 1
             if offset >= limit:
                 return False
+
+        if (len(result_section) < 100): # Don't need the last request, we're already done
+            return True
