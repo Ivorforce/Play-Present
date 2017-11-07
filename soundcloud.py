@@ -21,7 +21,6 @@ def try_tracks(tracks, write_out=lambda x: None):
 
         href = elements[0].get('href')
 
-
         track_url = "https://soundcloud.com" + href
         song_html = requests.get(track_url).text
         song_title = html.fromstring(song_html).findtext(".//title")
@@ -37,4 +36,3 @@ def try_tracks(tracks, write_out=lambda x: None):
         if searched % 20 == 0:
             print("Searched %d tracks" % searched)
 
-try_tracks(["Brian Cid - Tempestad"])
