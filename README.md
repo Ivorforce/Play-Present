@@ -1,5 +1,5 @@
-# Spotifree
-A dumb tool for new DJs to find free tracks from their Spotify playlists.
+# Play//Present
+A dumb tool for new DJs to find free releases in their Spotify playlists.
 
 To run, add a credentials.py file like this:
 
