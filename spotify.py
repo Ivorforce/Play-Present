@@ -31,6 +31,10 @@ def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result
 
         for item in result_section_tracks:
             spotify_track = item['track']
+
+            if not spotify_track: # Apparently this can happen
+                continue
+
             track = lambda: None
             setattr(track, 'title', spotify_track['name'])
             setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
