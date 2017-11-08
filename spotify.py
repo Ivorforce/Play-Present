@@ -32,18 +32,16 @@ def analyze_playlist(callback, user_id, playlist_id, offset, limit = 100000, res
         for item in result_section_tracks:
             spotify_track = item['track']
 
-            if not spotify_track: # Apparently this can happen
-                continue
+            if spotify_track: # Apparently this can happen
+                track = lambda: None
+                setattr(track, 'title', spotify_track['name'])
+                setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
+                setattr(track, 'duration', spotify_track['duration_ms'])
 
-            track = lambda: None
-            setattr(track, 'title', spotify_track['name'])
-            setattr(track, 'artists', map(lambda artist: artist['name'], spotify_track['artists']))
-            setattr(track, 'duration', spotify_track['duration_ms'])
-
-            if callback(track, offset):
-                result_limit -= 1
-                if result_limit < 0:
-                    return False
+                if callback(track, offset):
+                    result_limit -= 1
+                    if result_limit < 0:
+                        return False
 
             offset += 1
             if offset >= limit:
