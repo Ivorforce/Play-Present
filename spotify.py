@@ -24,11 +24,12 @@ def playlist_name(user_id, playlist_id):
 def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result_limit=200):
     while True:
         result_section = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
+        result_section_tracks = result_section['items']
 
-        if len(result_section) == 0:
+        if len(result_section_tracks) == 0:
             return True
 
-        for item in result_section['items']:
+        for item in result_section_tracks:
             spotify_track = item['track']
             track = lambda: None
             setattr(track, 'title', spotify_track['name'])
@@ -44,5 +45,5 @@ def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result
             if offset >= limit:
                 return False
 
-        if (len(result_section) < 100): # Don't need the last request, we're already done
+        if (len(result_section_tracks) < 100): # Don't need the last request, we're already done
             return True
