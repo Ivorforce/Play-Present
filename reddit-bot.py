@@ -28,7 +28,7 @@ def free_tracks(user_id, playlist_id):
     def try_track(track, offset):
         return soundcloud.try_track(track, offset + 1, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
 
-    if not spotify.analyze_playlist(try_track, user_id, playlist_id, 0):
+    if not spotify.analyze_playlist(try_track, user_id, playlist_id, 0, limit = 5000, result_limit = 50):
         found_tracks.append("... stopped due to timeout! Try a smaller playlist :)\n")
 
     return found_tracks

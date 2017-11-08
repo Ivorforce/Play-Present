@@ -21,7 +21,7 @@ def get_spotify():
 def playlist_name(user_id, playlist_id):
     return get_spotify().user_playlist(user_id, playlist_id)['name']
 
-def analyze_playlist(callback, user_id, playlist_id, offset, limit=10000, result_limit=200):
+def analyze_playlist(callback, user_id, playlist_id, offset, limit = 100000, result_limit = 1000):
     while True:
         result_section = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
         result_section_tracks = result_section['items']
