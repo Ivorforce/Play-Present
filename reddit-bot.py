@@ -5,6 +5,8 @@ import praw
 import spotify
 import soundcloud
 
+import urllib3
+
 bot_footer = """
 
 ---
@@ -112,7 +114,7 @@ while True:
         passed_time = (time.time() - cycle_start_time)
         time.sleep(max(60 * 10 - passed_time, 0)) # Take at most 60 * 10 seconds
 
-    except praw.exceptions.APIException as ex:
+    except praw.exceptions.APIException or urllib3.exceptions.MaxRetryError as ex:
         print(ex) # But try again
         time.sleep(60 * 10) # Later
 
