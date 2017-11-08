@@ -10,7 +10,7 @@ TRACK_VARIATION_MS = 1000 * 30  # 30 Seconds in case some intro / outro was adde
 
 purchase_title_regex = re.compile(re.escape("\"purchase_title\":\"") + "([^\"]*)")
 duration_regex = re.compile(re.escape("\"full_duration\":") + "([^,]*)")
-direct_download_regex = re.compile("%s[0-9]*%s" % ("https://api.soundcloud.com/tracks/", "/download"))
+direct_download_regex = re.compile("%s[0-9]*%s" % (re.escape("https://api.soundcloud.com/tracks/"), re.escape("/download")))
 
 
 def free_purchase_title(song_html):
