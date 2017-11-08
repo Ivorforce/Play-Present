@@ -10,27 +10,35 @@ TRACK_VARIATION_MS = 1000 * 30 # 30 Seconds in case some intro / outro was added
 
 purchase_title_regex = re.compile(re.escape("\"purchase_title\":\"") + "([^\"]*)")
 duration_regex = re.compile(re.escape("\"full_duration\":") + "([^,]*)")
+direct_download_regex = re.compile("https://api.soundcloud.com/tracks/[0-9]*/download")
+
+def free_purchase_title(song_html):
+    purchase_title_result = purchase_title_regex.search(song_html)
+    purchase_title = purchase_title_result.group(1).lower() if purchase_title_result else ""
+    return "free download" in purchase_title or "free dl" in purchase_title
+
+def free_song_title(song_tree):
+    song_title = song_tree.findtext(".//title").lower()
+    return "free download" in song_title or "free dl" in song_title
+
+def free_download_included(song_html):
+    return True if direct_download_regex.search(song_html) else False
 
 def try_track(track, number, write_out = lambda x: None, track_out = "%d %s @ %s"):
     query = ", ".join(track.artists) + " - " + track.title
     query_url = "https://soundcloud.com/search/sounds?q=" + urllib.parse.quote(query, safe='')
-    request = requests.get(query_url)
+    search_request = requests.get(query_url)
 
-    tree = html.fromstring(request.text)
-    elements = tree.xpath(GenericTranslator().css_to_xpath('ul>li>h2>a'))
+    search_tree = html.fromstring(search_request.text)
+    search_elements = search_tree.xpath(GenericTranslator().css_to_xpath('ul>li>h2>a'))
 
-    if len(elements) == 0:
+    if len(search_elements) == 0:
         return False
 
-    href = elements[0].get('href')
+    href = search_elements[0].get('href')
 
     track_url = "https://soundcloud.com" + href
     song_html = requests.get(track_url).text
-
-    song_title = html.fromstring(song_html).findtext(".//title").lower()
-
-    purchase_title_result = purchase_title_regex.search(song_html)
-    purchase_title = purchase_title_result.group(1).lower() if purchase_title_result else ""
 
     duration_result = duration_regex.search(song_html)
     duration = int(duration_result.group(1).lower()) if duration_result else None
@@ -40,8 +48,7 @@ def try_track(track, number, write_out = lambda x: None, track_out = "%d %s @ %s
         if duration else True
 
     is_free_track = duration_similar and \
-            ("free download" in purchase_title or "free dl" in purchase_title
-             or "free download" in song_title or "free dl" in song_title)
+            (free_purchase_title(song_html) or free_download_included(song_html) or free_song_title(html.fromstring(song_html)))
 
     if not is_free_track:
         return False
