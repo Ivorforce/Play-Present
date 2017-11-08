@@ -19,8 +19,6 @@ quiet_subreddits = []
 
 r = praw.Reddit('play-present-bot', user_agent='play-present-bot user agent')
 
-url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
-
 
 def free_tracks(user_id, playlist_id):
     found_tracks = []
@@ -34,7 +32,7 @@ def free_tracks(user_id, playlist_id):
     return found_tracks
 
 def free_tracks_from_body(body, url=""):
-    url_regex_result = url_regex.search(url) or url_regex.search(body)
+    url_regex_result = spotify.playlist_regex.search(url) or spotify.playlist_regex.search(body)
     if url_regex_result:
         return free_tracks(url_regex_result.group(1), url_regex_result.group(2))
     return []

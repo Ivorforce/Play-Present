@@ -1,4 +1,6 @@
 import argparse, re, os
+import spotify
+import soundcloud
 
 argparser = argparse.ArgumentParser()
 
@@ -18,14 +20,10 @@ except ImportError:
 playlist_link = args.playlist
 offset = int(args.offset) if args.offset is not None else 0
 
-url_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
-url_regex_result = url_regex.search(playlist_link)
+url_regex_result = spotify.playlist_regex.search(playlist_link)
 
 user_id = url_regex_result.group(1)
 playlist_id = url_regex_result.group(2)
-
-import spotify
-import soundcloud
 
 playlist_name = spotify.playlist_name(user_id, playlist_id)
 
