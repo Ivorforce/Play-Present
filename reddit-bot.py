@@ -26,7 +26,7 @@ def free_tracks(user_id, playlist_id):
     def try_track(track, offset):
         return soundcloud.try_track(track, offset + 1, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
 
-    if not spotify.analyze_playlist(try_track, user_id, playlist_id, 0, limit = 5000, result_limit = 50):
+    if not spotify.analyze_playlist(try_track, user_id, playlist_id, limit = 5000, result_limit = 50):
         found_tracks.append("... and that's the limit! Try a smaller playlist :)\n")
 
     return found_tracks
@@ -35,7 +35,7 @@ def free_tracks_from_body(body, url=""):
     url_regex_result = spotify.playlist_regex.search(url) or spotify.playlist_regex.search(body)
     if url_regex_result:
         return free_tracks(url_regex_result.group(1), url_regex_result.group(2))
-    return []
+    return None
 
 def reply_text(tracks, start_time):
     time_diff = time.time() - start_time
@@ -87,9 +87,10 @@ while True:
                     start_time = time.time()
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
-                    if (len(tracks) > 0) or sub not in quiet_subreddits:
-                        submission.reply(reply_text(tracks, start_time))
-                        print("Replied to submission " + submission.id)
+                    if tracks:
+                        if (len(tracks) > 0) or sub not in quiet_subreddits:
+                            submission.reply(reply_text(tracks, start_time))
+                            print("Replied to submission " + submission.id)
 
                     done_submissions.append(submission.id)
                     with open(submission_store, "a") as store:
@@ -102,12 +103,13 @@ while True:
                 start_time = time.time()
                 tracks = free_tracks_from_body(comment.body)
 
-                comment.reply(reply_text(tracks, start_time))
-                print("Replied to comment " + comment.id)
+                if tracks:
+                    comment.reply(reply_text(tracks, start_time))
+                    print("Replied to comment " + comment.id)
 
-                done_mentions.append(comment.id)
-                with open(mention_store, "a") as store:
-                    store.write("\n" + comment.id)
+                    done_mentions.append(comment.id)
+                    with open(mention_store, "a") as store:
+                        store.write("\n" + comment.id)
 
         passed_time = (time.time() - cycle_start_time)
         time.sleep(max(60 * 10 - passed_time, 0)) # Take at most 60 * 10 seconds

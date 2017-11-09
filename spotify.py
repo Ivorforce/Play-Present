@@ -35,7 +35,7 @@ def create_track(title, artists, duration):
     return track
 
 
-def analyze_playlist(callback, user_id, playlist_id, offset, limit=100000, result_limit=1000):
+def analyze_playlist(callback, user_id, playlist_id, offset=0, limit=100000, result_limit=1000):
     while True:
         result_section = get_spotify().user_playlist_tracks(user_id, playlist_id, limit=100, offset=offset)
         result_section_tracks = result_section['items']
