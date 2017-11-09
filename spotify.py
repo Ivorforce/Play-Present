@@ -5,7 +5,7 @@ import spotipy.util as util
 
 scope = 'user-library-read'
 
-playlist_regex = re.compile("%s([a-zA-Z0-9]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
+playlist_regex = re.compile("%s([^/]*)%s([a-zA-Z0-9]*)" % (re.escape("https://open.spotify.com/user/"), re.escape("/playlist/")))
 
 
 def get_token():
