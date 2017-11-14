@@ -11,7 +11,7 @@ bot_footer = """
 
 ---
 
-^I&#32;am&#32;a&#32;bot.&#32;|&#32;◷ %s&#32;|&#32;[Source](https://github.com/Ivorforce/Play-Present)&#32;|&#32;[Author](https://www.reddit.com/user/Ivorius/)
+^I&#32;am&#32;a&#32;bot.&#32;|&#32;◷&#32;%s&#32;|&#32;[Source](https://github.com/Ivorforce/Play-Present)&#32;|&#32;[Author](https://www.reddit.com/user/Ivorius/)
 """
 
 relevant_subreddits = ["playpresent"]
