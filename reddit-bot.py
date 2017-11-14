@@ -11,7 +11,7 @@ bot_footer = """
 
 ---
 
-^I&#32;am&#32;a&#32;bot.&#32;|&#32;[Source](https://github.com/Ivorforce/Play-Present)&#32;|&#32;[Author](https://www.reddit.com/user/Ivorius/)
+^I&#32;am&#32;a&#32;bot.&#32;|&#32;◷ %s&#32;|&#32;[Source](https://github.com/Ivorforce/Play-Present)&#32;|&#32;[Author](https://www.reddit.com/user/Ivorius/)
 """
 
 relevant_subreddits = ["playpresent"]
@@ -19,6 +19,9 @@ quiet_subreddits = []
 
 r = praw.Reddit('play-present-bot', user_agent='play-present-bot user agent')
 
+def footer(time_diff):
+    time_comment = "%ds" % time_diff if time_diff < 120 else "%dm" % int(time_diff / 60)
+    return bot_footer % time_comment
 
 def free_tracks(user_id, playlist_id):
     found_tracks = []
@@ -39,17 +42,16 @@ def free_tracks_from_body(body, url=""):
 
 def reply_text(tracks, start_time):
     time_diff = time.time() - start_time
-    time_comment = "This took me %d seconds!" % time_diff if time_diff < 120 else "This took me about %d minutes!" % int(time_diff / 60)
 
     if (len(tracks) > 0):
         track_list = "\n".join(tracks)
         if (len(track_list) > 9000): # Reddit Limit at 10 000
             track_list = track_list[:9000] + "...\n\n(This was cut because the post was too long!)"
 
-        return ("I found %d free %s in this playlist: \n\n%s\n\n%s%s" %
-                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, time_comment, bot_footer))
+        return ("I found %d free %s in this playlist: \n\n%s%s" %
+                     (len(tracks), ("track" if len(tracks) == 1 else "tracks"), track_list, footer(time_diff)))
     else:
-        return "I found no free tracks in this playlist :(\n\n%s%s" % (time_comment, bot_footer)
+        return "I found no free tracks in this playlist :(%s" % (footer(time_diff))
 
 # Load
 
