@@ -28,8 +28,8 @@ def free_download_included(song_html):
     return True if direct_download_regex.search(song_html) else False
 
 
-def try_track(track, number, write_out=lambda x: None, track_out="%d %s @ %s"):
-    query = ", ".join(track.artists) + " - " + track.title
+def try_track(track, number, write_out=lambda x: None, track_out="%s (%d) @ %s"):
+    query = ", ".join(track.artists) + " — " + track.title
     query_url = "https://soundcloud.com/search/sounds?q=" + urllib.parse.quote(query, safe='')
     search_request = requests.get(query_url)
 
@@ -56,7 +56,7 @@ def try_track(track, number, write_out=lambda x: None, track_out="%d %s @ %s"):
             html.fromstring(song_html))):
         return False
 
-    track_info = track_out % (number, query, track_url)
+    track_info = track_out % (query, number, track_url)
     print(track_info)
     write_out(track_info + "\n")
 

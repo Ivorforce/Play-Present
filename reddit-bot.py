@@ -27,7 +27,7 @@ def free_tracks(user_id, playlist_id):
     found_tracks = []
 
     def try_track(track, offset):
-        return soundcloud.try_track(track, offset + 1, lambda s: found_tracks.append(s), "%d %s @ [Soundcloud](%s)")
+        return soundcloud.try_track(track, offset + 1, lambda s: found_tracks.append(s), "» %s (%d) @ [Soundcloud](%s)")
 
     if not spotify.analyze_playlist(try_track, user_id, playlist_id, limit = 5000, result_limit = 50):
         found_tracks.append("... and that's the limit! Try a smaller playlist :)\n")
