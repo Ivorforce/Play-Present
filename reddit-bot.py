@@ -82,7 +82,7 @@ while True:
         for sub in relevant_subreddits:
             subreddit = r.subreddit(sub)
 
-            for submission in subreddit.hot(limit=10):
+            for submission in subreddit.new(limit=10):
                 if submission.id not in done_submissions:
                     print("Searching playlist for submission " + submission.id)
 
