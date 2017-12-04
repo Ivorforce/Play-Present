@@ -89,10 +89,12 @@ while True:
                     start_time = time.time()
                     tracks = free_tracks_from_body(submission.selftext.lower(), submission.url)
 
-                    if tracks:
+                    if tracks is not None:
                         if (len(tracks) > 0) or sub not in quiet_subreddits:
                             submission.reply(reply_text(tracks, start_time))
                             print("Replied to submission " + submission.id)
+                        else:
+                            print("Skipped replying to submission " + submission.id + " in sub " + sub)
 
                     done_submissions.append(submission.id)
                     with open(submission_store, "a") as store:
